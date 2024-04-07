@@ -19,31 +19,37 @@ async def extract_coordinates(exif_data):
     async def dms_to_decimal_degrees(degrees, minutes, seconds):
         return degrees + minutes / 60 + seconds / 3600
 
-    # Get latitude components
-    lat_degrees = exif_data['GPSLatitude'][0]
-    lat_minutes = exif_data['GPSLatitude'][1]
-    lat_seconds = exif_data['GPSLatitude'][2]
-    lat_ref = exif_data['GPSLatitudeRef']
+    if exif_data.get('GPSLatitude', None) and exif_data.get('GPSLongitude', None):
+        # Get latitude components
 
-    # Get longitude components
-    lon_degrees = exif_data['GPSLongitude'][0]
-    lon_minutes = exif_data['GPSLongitude'][1]
-    lon_seconds = exif_data['GPSLongitude'][2]
-    lon_ref = exif_data['GPSLongitudeRef']
+        lat_degrees = exif_data['GPSLatitude'][0]
+        lat_minutes = exif_data['GPSLatitude'][1]
+        lat_seconds = exif_data['GPSLatitude'][2]
+        lat_ref = exif_data['GPSLatitudeRef']
+
+        # Get longitude components
+ 
+        lon_degrees = exif_data['GPSLongitude'][0]
+        lon_minutes = exif_data['GPSLongitude'][1]
+        lon_seconds = exif_data['GPSLongitude'][2]
+        lon_ref = exif_data['GPSLongitudeRef']
 
 
-    latitude = await dms_to_decimal_degrees(lat_degrees, lat_minutes, lat_seconds)
-    if lat_ref == 'S':
-        latitude = -latitude
+        latitude = await dms_to_decimal_degrees(lat_degrees, lat_minutes, lat_seconds)
+        if lat_ref == 'S':
+            latitude = -latitude
 
-    longitude = await dms_to_decimal_degrees(lon_degrees, lon_minutes, lon_seconds)
-    if lon_ref == 'W':
-        longitude = -longitude
+        longitude = await dms_to_decimal_degrees(lon_degrees, lon_minutes, lon_seconds)
+        if lon_ref == 'W':
+            longitude = -longitude
 
-    latitude = await fraction_to_float(latitude)
-    longitude = await fraction_to_float(longitude)
+        latitude = await fraction_to_float(latitude)
+        longitude = await fraction_to_float(longitude)
 
-    return (latitude, longitude)  
+        return (latitude, longitude)  
+
+    else:
+        return ()
 
 
 
