@@ -73,7 +73,6 @@ async def detect_litter(file: UploadFile = File(...)) -> dict:
 
     
     image = Image.open(file.file)
-    found_litter, coordinates = await mock_ai_model(image)
 
     ai_task = asyncio.create_task(mock_ai_model(image))
 
